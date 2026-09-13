@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SalesAI Prototype</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-icon">
+          <span></span><span></span><span></span>
+        </div>
+        <div>
+          <div class="brand-name">SalesAI</div>
+          <div class="brand-sub">Concept Prototype</div>
+        </div>
+      </div>
+
+      <nav class="nav">
+        <button class="nav-item active" data-page="dashboard">
+          <span class="nav-icon">⌂</span><span>Dashboard</span>
+        </button>
+        <button class="nav-item" data-page="ask-ai">
+          <span class="nav-icon">◉</span><span>Ask AI</span>
+        </button>
+        <button class="nav-item" data-page="sales-data">
+          <span class="nav-icon">▦</span><span>Sales Data</span>
+        </button>
+        <button class="nav-item" data-page="reports">
+          <span class="nav-icon">▤</span><span>Reports</span>
+        </button>
+        <button class="nav-item" data-page="settings">
+          <span class="nav-icon">⚙</span><span>Settings</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-spacer"></div>
+
+      <div class="upload-card">
+        <div class="upload-icon">⇧</div>
+        <div class="upload-title">Upload New Data</div>
+        <div class="upload-sub">CSV or Excel (.xlsx)</div>
+        <label class="upload-btn">
+          Upload File
+          <input id="file-input" type="file" accept=".csv,.xlsx,.xls" />
+        </label>
+        <div id="file-name" class="file-name"></div>
+      </div>
+
+      <div class="profile">
+        <div class="avatar">DS</div>
+        <div>
+          <div class="profile-name">Demo User</div>
+          <div class="profile-sub">SME Business</div>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <div class="topbar">
+        <div class="mobile-brand">SalesAI</div>
+        <div class="topbar-right">
+          <div class="top-avatar">◉</div>
+          <div>
+            <div class="top-name">Demo User</div>
+            <div class="top-sub">SME Business</div>
+          </div>
+        </div>
+      </div>
+
+      <section id="dashboard" class="page active-page">
+        <div class="page-head">
+          <div>
+            <h1>Welcome back!</h1>
+            <p>Here’s an overview of your sales performance.</p>
+          </div>
+          <div class="date-pill">📅 1 Jan 2026 – 31 Dec 2026⌄</div>
+        </div>
+
+        <div class="notice">Concept prototype — sample data is illustrative and not a research result.</div>
+
+        <div class="dashboard-grid">
+          <div class="content-column">
+            <div class="kpi-grid">
+              <div class="kpi-card">
+                <div class="kpi-row"><span>Total Sales</span><div class="icon-chip">◫</div></div>
+                <div class="kpi-value">$125,430</div>
+                <div class="kpi-up">↑ 12.5%</div>
+                <div class="muted">vs. previous period</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-row"><span>Total Orders</span><div class="icon-chip">🛒</div></div>
+                <div class="kpi-value">1,240</div>
+                <div class="kpi-up">↑ 8.3%</div>
+                <div class="muted">vs. previous period</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-row"><span>Average Order Value</span><div class="icon-chip">◇</div></div>
+                <div class="kpi-value">$101.15</div>
+                <div class="kpi-up">↑ 3.2%</div>
+                <div class="muted">vs. previous period</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-row"><span>Top Product</span><div class="icon-chip">★</div></div>
+                <div class="kpi-value product-name">Wireless Headphones</div>
+                <div class="muted">$18,450</div>
+              </div>
+            </div>
+
+            <div class="chart-row">
+              <div class="card chart-card">
+                <div class="card-title-row">
+                  <h3>Sales Trend</h3>
+                  <div class="mini-select">Monthly⌄</div>
+                </div>
+                <svg class="line-chart" viewBox="0 0 760 280" preserveAspectRatio="none" aria-label="Sales trend chart">
+                  <defs>
+                    <linearGradient id="areaGradient" x1="0" x2="0" y1="0" y2="1">
+                      <stop offset="0%" stop-color="#4c8cff" stop-opacity=".20"/>
+                      <stop offset="100%" stop-color="#4c8cff" stop-opacity="0"/>
+                    </linearGradient>
+                  </defs>
+                  <g class="grid-lines">
+                    <line x1="60" y1="50" x2="730" y2="50"/>
+                    <line x1="60" y1="100" x2="730" y2="100"/>
+                    <line x1="60" y1="150" x2="730" y2="150"/>
+                    <line x1="60" y1="200" x2="730" y2="200"/>
+                    <line x1="60" y1="250" x2="730" y2="250"/>
+                  </g>
+                  <path class="area" d="M60 225 L115 204 L170 185 L225 202 L280 176 L335 168 L390 143 L445 150 L500 132 L555 104 L610 86 L665 67 L720 78 L720 250 L60 250 Z"/>
+                  <polyline class="trend-line" points="60,225 115,204 170,185 225,202 280,176 335,168 390,143 445,150 500,132 555,104 610,86 665,67 720,78"/>
+                  <g class="points">
+                    <circle cx="60" cy="225" r="4"/><circle cx="115" cy="204" r="4"/><circle cx="170" cy="185" r="4"/>
+                    <circle cx="225" cy="202" r="4"/><circle cx="280" cy="176" r="4"/><circle cx="335" cy="168" r="4"/>
+                    <circle cx="390" cy="143" r="4"/><circle cx="445" cy="150" r="4"/><circle cx="500" cy="132" r="4"/>
+                    <circle cx="555" cy="104" r="4"/><circle cx="610" cy="86" r="4"/><circle cx="665" cy="67" r="4"/>
+                    <circle cx="720" cy="78" r="4"/>
+                  </g>
+                </svg>
+                <div class="month-labels">
+                  <span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span>
+                  <span>Jul</span><span>Aug</span><span>Sep</span><span>Oct</span><span>Nov</span><span>Dec</span>
+                </div>
+              </div>
+
+              <div class="card donut-card">
+                <h3>Sales by Product Category</h3>
+                <div class="donut-wrap">
+                  <div class="donut">
+                    <div class="donut-center">
+                      <strong>$125,430</strong>
+                      <span>Total Sales</span>
+                    </div>
+                  </div>
+                  <div class="legend">
+                    <div><span class="dot d1"></span>Electronics <b>38%</b></div>
+                    <div><span class="dot d2"></span>Accessories <b>24%</b></div>
+                    <div><span class="dot d3"></span>Home & Living <b>18%</b></div>
+                    <div><span class="dot d4"></span>Wearables <b>12%</b></div>
+                    <div><span class="dot d5"></span>Others <b>8%</b></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="bottom-row">
+              <div class="card table-card">
+                <h3>Top 5 Products</h3>
+                <div class="table-wrap">
+                  <table>
+                    <thead><tr><th>#</th><th>Product</th><th>Units Sold</th><th>Total Sales</th></tr></thead>
+                    <tbody>
+                      <tr><td>1</td><td>Wireless Headphones</td><td>320</td><td>$18,450</td></tr>
+                      <tr><td>2</td><td>Portable Charger</td><td>280</td><td>$14,600</td></tr>
+                      <tr><td>3</td><td>Bluetooth Speaker</td><td>210</td><td>$12,300</td></tr>
+                      <tr><td>4</td><td>Smart Watch</td><td>180</td><td>$11,250</td></tr>
+                      <tr><td>5</td><td>Laptop Stand</td><td>150</td><td>$9,800</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div class="card region-card">
+                <h3>Sales by Region</h3>
+                <div class="region-row"><span>Central</span><div class="bar-track"><div class="bar b1" style="width:88%"></div></div><b>28%</b></div>
+                <div class="region-row"><span>West</span><div class="bar-track"><div class="bar b2" style="width:76%"></div></div><b>24%</b></div>
+                <div class="region-row"><span>East</span><div class="bar-track"><div class="bar b3" style="width:63%"></div></div><b>20%</b></div>
+                <div class="region-row"><span>North</span><div class="bar-track"><div class="bar b4" style="width:51%"></div></div><b>16%</b></div>
+                <div class="region-row"><span>South</span><div class="bar-track"><div class="bar b5" style="width:39%"></div></div><b>12%</b></div>
+              </div>
+            </div>
+          </div>
+
+          <aside class="ai-panel card">
+            <div class="ai-title">✦ Ask SalesAI</div>
+            <p class="ai-sub">Ask questions about your sales data in natural language.</p>
+            <div class="chat user">What were my top performing products this year?</div>
+            <div class="chat ai">
+              <b>Your top performing products this year were:</b><br><br>
+              1. <strong>Wireless Headphones</strong><br>
+              2. <strong>Portable Charger</strong><br>
+              3. <strong>Bluetooth Speaker</strong><br><br>
+              These three products contributed strongly to total sales.
+            </div>
+            <button class="suggestion" data-q="Show me sales by month">Show me sales by month ↗</button>
+            <button class="suggestion" data-q="Which product had the highest growth?">Which product had the highest growth? ↗</button>
+            <button class="suggestion" data-q="Compare sales by region">Compare sales by region ↗</button>
+            <button class="suggestion" data-q="Why did sales increase in November?">Why did sales increase in November? ↗</button>
+            <div class="ask-box">
+              <input id="quick-question" placeholder="Ask a question..." />
+              <button id="quick-send">➤</button>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section id="ask-ai" class="page">
+        <div class="page-head">
+          <div><h1>Ask SalesAI</h1><p>Explore your business data in natural language.</p></div>
+        </div>
+        <div class="notice">Simulated interaction for the concept prototype.</div>
+        <div class="card ai-page-card">
+          <div id="chat-log" class="chat-log">
+            <div class="chat user">What were my top-performing products this year?</div>
+            <div class="chat ai">Your top-performing products were <strong>Wireless Headphones</strong>, <strong>Portable Charger</strong>, and <strong>Bluetooth Speaker</strong>.</div>
+          </div>
+          <div class="prompt-grid">
+            <button class="prompt-chip">Show me sales by month</button>
+            <button class="prompt-chip">Which product had the highest growth?</button>
+            <button class="prompt-chip">Compare sales by region</button>
+            <button class="prompt-chip">Why did sales increase in November?</button>
+          </div>
+          <div class="ask-box large">
+            <input id="ai-input" placeholder="Ask anything about your sales..." />
+            <button id="ai-send">Send</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="sales-data" class="page">
+        <div class="page-head">
+          <div><h1>Sales Data</h1><p>View, filter and upload your business records.</p></div>
+        </div>
+        <div class="filter-row">
+          <div class="filter-box">Date range<br><strong>Jan – Dec 2026</strong></div>
+          <div class="filter-box">Products<br><strong>All products</strong></div>
+          <div class="filter-box">Regions<br><strong>All regions</strong></div>
+        </div>
+        <div class="card data-card">
+          <h3>Data Preview</h3>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Date</th><th>Product</th><th>Category</th><th>Region</th><th>Qty</th><th>Revenue</th></tr></thead>
+              <tbody>
+                <tr><td>2026-01-04</td><td>Wireless Headphones</td><td>Electronics</td><td>Central</td><td>3</td><td>$174</td></tr>
+                <tr><td>2026-01-06</td><td>Portable Charger</td><td>Accessories</td><td>West</td><td>4</td><td>$168</td></tr>
+                <tr><td>2026-01-09</td><td>Bluetooth Speaker</td><td>Electronics</td><td>East</td><td>2</td><td>$82</td></tr>
+                <tr><td>2026-01-10</td><td>Smart Watch</td><td>Wearables</td><td>Central</td><td>1</td><td>$63</td></tr>
+                <tr><td>2026-01-12</td><td>Laptop Stand</td><td>Home & Living</td><td>South</td><td>2</td><td>$98</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card upload-big">
+          <div class="upload-icon big">⇧</div>
+          <h3>Upload New Data</h3>
+          <p>CSV or Excel files can be added here in the future system.</p>
+          <button class="primary-btn" id="fake-upload">Choose File</button>
+        </div>
+      </section>
+
+      <section id="reports" class="page">
+        <div class="page-head">
+          <div><h1>Reports</h1><p>Example reports generated from business data.</p></div>
+        </div>
+        <div class="report-grid">
+          <div class="report-card blue">
+            <div class="report-icon">▤</div>
+            <h3>Monthly Sales Report</h3>
+            <p>Revenue, order volume, products and monthly trends.</p>
+            <button class="secondary-btn">Preview</button>
+          </div>
+          <div class="report-card green">
+            <div class="report-icon">★</div>
+            <h3>Product Performance</h3>
+            <p>Top products, low performers and category contribution.</p>
+            <button class="secondary-btn">Preview</button>
+          </div>
+          <div class="report-card purple">
+            <div class="report-icon">✦</div>
+            <h3>AI Insight Summary</h3>
+            <p>Plain-language summary of notable patterns and changes.</p>
+            <button class="secondary-btn">Preview</button>
+          </div>
+        </div>
+        <div class="card data-card">
+          <h3>Recent Reports</h3>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Report</th><th>Type</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr><td>August Sales Summary</td><td>Monthly</td><td><span class="status-ready">Ready</span></td></tr>
+                <tr><td>Q2 Product Performance</td><td>Product</td><td><span class="status-ready">Ready</span></td></tr>
+                <tr><td>Regional Sales Review</td><td>Regional</td><td><span class="status-ready">Ready</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section id="settings" class="page">
+        <div class="page-head">
+          <div><h1>Settings</h1><p>Example account and dashboard preferences.</p></div>
+        </div>
+        <div class="settings-grid">
+          <div class="card form-card">
+            <label>Business Name<input value="Demo SME" /></label>
+            <label>Industry<select><option>Retail</option><option>Food & Beverage</option><option>Online Business</option><option>Services</option></select></label>
+            <label>Currency<select><option>BND</option><option>USD</option><option>MYR</option><option>SGD</option></select></label>
+            <label>Default period<select><option>This year</option><option>This month</option><option>Last 3 months</option></select></label>
+            <button class="primary-btn">Save Settings</button>
+          </div>
+          <div class="card settings-side">
+            <h3>Preferences</h3>
+            <div class="toggle-row"><span>Show AI explanations automatically</span><div class="switch on"></div></div>
+            <div class="toggle-row"><span>Monthly summary notifications</span><div class="switch"></div></div>
+            <div class="toggle-row"><span>Compact dashboard view</span><div class="switch"></div></div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="toast" class="toast"></div>
+  <script src="script.js"></script>
+</body>
+</html>
