@@ -1,778 +1,322 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SalesSense Prototype</title>
-  <style>
-
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>SalesSense — Grandsandwich Demo</title>
+<style>
 :root{
-  --bg:#f7faff;
-  --card:#ffffff;
-  --text:#0f1f3d;
-  --muted:#6c7b92;
-  --line:#e5ebf4;
-  --blue:#246bfe;
-  --blue2:#5f9cff;
-  --green:#1db17a;
-  --purple:#8f7aea;
-  --pink:#ef8aa8;
-  --shadow:0 8px 30px rgba(34,65,115,.06);
+  --bg:#f7f8fc;--text:#1f2a44;--muted:#77839a;--line:#e8edf4;
+  --blue:#5b8def;--green:#59c29d;--purple:#9c83e4;--peach:#f6b37d;
+  --wa:#dcf8c6;--shadow:0 12px 32px rgba(42,60,95,.12);
 }
-*{box-sizing:border-box}
-body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--text)}
-button,input,select{font:inherit}
-button{cursor:pointer}
-.app-shell{display:flex;min-height:100vh}
-.sidebar{position:fixed;left:0;top:0;bottom:0;width:232px;background:#fff;border-right:1px solid var(--line);padding:22px 18px;display:flex;flex-direction:column;z-index:20}
-.brand{display:flex;gap:12px;align-items:center;margin-bottom:28px}
-.brand-icon{display:flex;align-items:flex-end;gap:3px;width:36px;height:34px}
-.brand-icon span{display:block;width:8px;border-radius:3px 3px 0 0;background:linear-gradient(180deg,#6ca7ff,#1f6df6)}
-.brand-icon span:nth-child(1){height:13px}.brand-icon span:nth-child(2){height:22px}.brand-icon span:nth-child(3){height:31px}
-.brand-name{font-size:1.5rem;font-weight:800}.brand-sub{font-size:.72rem;color:#8391a6;margin-top:2px}
-.nav{display:grid;gap:7px}.nav-item{display:flex;align-items:center;gap:12px;padding:12px 13px;border:0;border-radius:11px;background:transparent;color:#40506a;text-align:left}
-.nav-item:hover{background:#f3f7fd}.nav-item.active{background:#e8f2ff;color:#1261e8;font-weight:700}
-.nav-icon{font-size:1.1rem;width:22px;text-align:center}
-.sidebar-spacer{flex:1}
-.upload-card{background:#f1f7ff;border-radius:14px;padding:17px;text-align:center;margin-bottom:18px}
-.upload-icon{font-size:2rem;color:var(--blue);font-weight:700}.upload-title{font-weight:700;margin-top:4px}.upload-sub{font-size:.78rem;color:#7e8da4;margin:6px 0 12px}
-.upload-btn{display:block;background:var(--blue);color:#fff;border-radius:9px;padding:9px 12px;font-weight:700}.upload-btn input{display:none}.file-name{font-size:.7rem;color:#51617a;margin-top:8px;word-break:break-word}
-.profile{display:flex;align-items:center;gap:10px;border-top:1px solid var(--line);padding-top:14px}.avatar{width:34px;height:34px;border-radius:50%;background:#eaf2ff;color:#2d6fe8;display:grid;place-items:center;font-weight:800}.profile-name{font-size:.88rem;font-weight:700}.profile-sub{font-size:.72rem;color:#8995a8}
-.main{margin-left:232px;width:calc(100% - 232px);min-height:100vh}
-.topbar{height:58px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:flex-end;padding:0 30px;position:sticky;top:0;z-index:15}
-.topbar-right{display:flex;align-items:center;gap:9px}.top-avatar{width:34px;height:34px;border-radius:50%;background:#e9edf4;display:grid;place-items:center;color:#7f8ba0}.top-name{font-size:.86rem;font-weight:700}.top-sub{font-size:.7rem;color:#8794a8}
-.mobile-brand{display:none;font-weight:800}
-.page{display:none;padding:28px 28px 40px}.active-page{display:block}
-.page-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px}.page-head h1{margin:0;font-size:2rem}.page-head p{margin:6px 0 0;color:var(--muted)}
-.date-pill,.mini-select{border:1px solid var(--line);background:#fff;border-radius:9px;padding:10px 13px;color:#40506a;font-size:.88rem}
-.notice{background:#fff6d7;border:1px solid #f6df95;color:#715c17;border-radius:10px;padding:10px 12px;margin-bottom:18px;font-size:.84rem}
-.dashboard-grid{display:grid;grid-template-columns:minmax(0,1fr) 310px;gap:16px}.content-column{min-width:0}
-.kpi-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}.kpi-card,.card{background:#fff;border:1px solid var(--line);border-radius:15px;box-shadow:var(--shadow)}
-.kpi-card{padding:16px;min-height:132px}.kpi-row{display:flex;justify-content:space-between;align-items:center;color:#40506a;font-size:.82rem}.icon-chip{width:34px;height:34px;border-radius:10px;background:#edf4ff;display:grid;place-items:center;color:var(--blue)}
-.kpi-value{font-size:1.45rem;font-weight:800;margin-top:10px}.product-name{font-size:1rem;line-height:1.3}.kpi-up{color:var(--green);font-weight:800;margin-top:9px;font-size:.82rem}.muted{color:#8290a6;font-size:.75rem;margin-top:3px}
-.chart-row,.bottom-row{display:grid;grid-template-columns:1.45fr .9fr;gap:14px;margin-top:14px}.card{padding:16px}.card h3{margin:0 0 15px;font-size:1rem}.card-title-row{display:flex;align-items:center;justify-content:space-between}
-.line-chart{width:100%;height:260px}.grid-lines line{stroke:#e8edf5;stroke-width:1}.area{fill:url(#areaGradient)}.trend-line{fill:none;stroke:#2c7af7;stroke-width:3}.points circle{fill:#2c7af7;stroke:#fff;stroke-width:2}.month-labels{display:grid;grid-template-columns:repeat(12,1fr);font-size:.66rem;color:#8592a6;text-align:center;margin-top:-6px}
-.donut-wrap{display:flex;align-items:center;justify-content:space-between;gap:15px}.donut{width:185px;height:185px;border-radius:50%;background:conic-gradient(#236bd8 0 38%,#55a0ff 38% 62%,#f08ba2 62% 80%,#8f7aea 80% 92%,#dce7f7 92% 100%);position:relative}.donut:after{content:"";position:absolute;inset:42px;background:#fff;border-radius:50%}.donut-center{position:absolute;inset:0;z-index:2;display:grid;place-content:center;text-align:center}.donut-center strong{font-size:1rem}.donut-center span{font-size:.7rem;color:#78879c;margin-top:2px}.legend{flex:1;display:grid;gap:10px;font-size:.73rem}.legend div{display:grid;grid-template-columns:10px 1fr auto;gap:8px;align-items:center}.dot{width:8px;height:8px;border-radius:3px}.d1{background:#236bd8}.d2{background:#55a0ff}.d3{background:#f08ba2}.d4{background:#8f7aea}.d5{background:#dce7f7}
-.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:.78rem}th{background:#f6f8fc;color:#34435c;text-align:left;padding:9px}td{padding:9px;border-bottom:1px solid #eef2f7}.region-row{display:grid;grid-template-columns:56px 1fr 34px;gap:10px;align-items:center;margin:14px 0;font-size:.75rem}.bar-track{height:17px;background:#edf2f8;border-radius:4px;overflow:hidden}.bar{height:100%;border-radius:4px}.b1{background:#236bd8}.b2{background:#4d93f8}.b3{background:#7db4ff}.b4{background:#b3a2ef}.b5{background:#d7c9f7}
-.ai-panel{align-self:start;position:sticky;top:74px}.ai-title{font-size:1.15rem;font-weight:800}.ai-sub{font-size:.78rem;color:#7d8aa0}.chat{border-radius:12px;padding:12px 13px;font-size:.78rem;line-height:1.45;margin:10px 0}.chat.user{background:#e6f1ff;margin-left:28px}.chat.ai{background:#f5f7fb}.suggestion{width:100%;text-align:left;background:#fff;border:1px solid #cfe0f7;border-radius:9px;padding:10px;margin:5px 0;color:#28435f}.suggestion:hover{background:#f5f9ff}.ask-box{display:flex;gap:7px;margin-top:14px}.ask-box input{flex:1;border:1px solid var(--line);border-radius:9px;padding:11px}.ask-box button{border:0;border-radius:9px;background:var(--blue);color:#fff;padding:0 13px}.ask-box.large{margin-top:18px}.chat-log{min-height:240px}.prompt-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.prompt-chip{border:1px solid #dce7f7;background:#fff;border-radius:10px;padding:11px;text-align:left}
-.ai-page-card{max-width:900px}.filter-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:14px}.filter-box{background:#fff;border:1px solid var(--line);border-radius:12px;padding:13px;color:#8390a4;font-size:.76rem}.filter-box strong{display:block;color:#243550;margin-top:5px}
-.data-card{margin-bottom:14px}.upload-big{text-align:center;padding:35px}.upload-icon.big{font-size:3rem}.primary-btn,.secondary-btn{border:0;border-radius:9px;padding:10px 14px;font-weight:700}.primary-btn{background:var(--blue);color:#fff}.secondary-btn{background:#fff;border:1px solid var(--line);color:#30425e}
-.report-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:14px}.report-card{border-radius:15px;padding:20px;border:1px solid var(--line)}.report-card.blue{background:#eef6ff}.report-card.green{background:#effaf4}.report-card.purple{background:#f4efff}.report-icon{font-size:1.7rem}.report-card h3{margin:10px 0 6px}.report-card p{color:#64738a;font-size:.82rem}.status-ready{background:#eaf8f0;color:#14825d;padding:4px 8px;border-radius:999px;font-size:.7rem;font-weight:700}
-.settings-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:14px}.form-card{display:grid;gap:14px}.form-card label{font-size:.8rem;color:#4c5d75;display:grid;gap:6px}.form-card input,.form-card select{border:1px solid var(--line);border-radius:9px;padding:10px;background:#fff}.settings-side h3{margin-top:0}.toggle-row{display:flex;justify-content:space-between;gap:12px;padding:14px 0;border-bottom:1px solid #eef2f6;font-size:.82rem}.switch{width:42px;height:24px;border-radius:999px;background:#d6dde8;position:relative}.switch:after{content:"";position:absolute;width:18px;height:18px;border-radius:50%;background:#fff;top:3px;left:3px;box-shadow:0 1px 5px rgba(0,0,0,.1)}.switch.on{background:#2f7bf0}.switch.on:after{left:21px}
-.toast{position:fixed;right:22px;bottom:22px;background:#12233f;color:#fff;padding:12px 16px;border-radius:10px;box-shadow:0 10px 30px rgba(10,25,50,.2);opacity:0;pointer-events:none;transform:translateY(10px);transition:.2s;z-index:100}.toast.show{opacity:1;transform:none}
+*{box-sizing:border-box} html{scroll-behavior:smooth}
+body{margin:0;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:linear-gradient(180deg,#fffdf9,#f8fbff 52%,#fbf9ff);color:var(--text);overflow-x:hidden}
+button,input{font:inherit} button{cursor:pointer}
+.shell{display:flex;min-height:100vh}
+aside{width:230px;background:#fff;border-right:1px solid var(--line);padding:20px 16px;position:fixed;inset:0 auto 0 0;z-index:40}
+.brand-row{display:flex;gap:10px;align-items:center}.logo{width:40px;height:40px;border-radius:12px;background:linear-gradient(145deg,#5b8def,#9c83e4);color:#fff;display:grid;place-items:center;font-weight:900}
+.brand{font-size:1.25rem;font-weight:900}.sub{font-size:.72rem;color:var(--muted)}
+nav{display:grid;gap:7px;margin-top:24px}nav button{border:0;background:transparent;text-align:left;padding:11px 12px;border-radius:11px;color:#526079;font-weight:650}
+nav button.active,nav button:hover{background:linear-gradient(90deg,#eaf2ff,#f4efff);color:#375fbd}
+.note{margin-top:24px;background:linear-gradient(135deg,#fff5d7,#fff1eb);border:1px solid #f4ddb0;padding:11px;border-radius:12px;font-size:.72rem;color:#725a22;line-height:1.45}
+main{margin-left:230px;width:calc(100% - 230px);padding:22px;min-width:0}.page{display:none}.page.active{display:block}
+header{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;margin-bottom:16px}h1{margin:0;font-size:1.9rem}header p{margin:6px 0 0;color:var(--muted)}
+.badge{display:inline-block;background:#eef5ff;color:#3768c7;padding:5px 9px;border-radius:999px;font-size:.7rem;font-weight:800}
+.hero-strip{display:grid;grid-template-columns:1.4fr .9fr;gap:12px;margin-bottom:12px}
+.hero-card{background:linear-gradient(135deg,#eaf5ff 0%,#f2efff 55%,#fff3e6 100%);border:1px solid #e2e9f5;border-radius:20px;padding:20px}
+.hero-number{font-size:2.8rem;font-weight:900}.hero-sub{color:var(--muted);font-size:.82rem}
+.hero-bullets{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}.pill{padding:7px 10px;border-radius:999px;font-size:.72rem;font-weight:700;background:#fff}
+.snapshot-card,.card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:0 8px 24px rgba(45,62,95,.05);min-width:0}
+.snapshot-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.snapshot-box{border-radius:14px;padding:12px}.snapshot-box span{font-size:.7rem;color:var(--muted)}.snapshot-box b{display:block;font-size:1.25rem;margin-top:4px}
+.sg{background:#dff6ec}.sp{background:#ffe7f0}.sy{background:#fff6d7}.sl{background:#eee9ff}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.label{font-size:.76rem;color:var(--muted)}.value{font-size:1.55rem;font-weight:900;margin-top:6px}.delta{font-size:.72rem;margin-top:6px}
+.two{display:grid;grid-template-columns:1.4fr 1fr;gap:12px;margin-top:12px}.three{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px}
+.section-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.section-title h3{margin:0}.small-muted{font-size:.68rem;color:var(--muted)}
+.bar{height:10px;background:#eef2f7;border-radius:99px;overflow:hidden}.bar i{display:block;height:100%;border-radius:99px}
+.product-bars{display:grid;gap:10px}.product-row{display:grid;grid-template-columns:1.35fr 2fr auto;gap:10px;align-items:center;font-size:.75rem}.pbar{height:9px;background:#eef2f7;border-radius:99px;overflow:hidden}.pbar i{display:block;height:100%;background:linear-gradient(90deg,#5b8def,#9c83e4)}
+.daybars{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;align-items:end;height:180px}.daycol{display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%;gap:6px}.daybar{width:24px;border-radius:7px 7px 3px 3px;background:linear-gradient(180deg,#6aa0ff,#8d81df)}.daycol span{font-size:.62rem;color:var(--muted)}
+.donut-wrap{display:flex;gap:18px;align-items:center}.donut{width:150px;height:150px;border-radius:50%;background:conic-gradient(var(--blue) 0 56.5%,var(--peach) 56.5% 100%);position:relative}.donut:after{content:"";position:absolute;inset:33px;background:#fff;border-radius:50%}.donut-center{position:absolute;inset:0;z-index:2;display:grid;place-content:center;text-align:center}
+table{width:100%;border-collapse:collapse;font-size:.76rem}th,td{padding:8px;border-bottom:1px solid #eef2f6;text-align:left}th{color:#59677d}
+.data-scroll{overflow-x:auto}
 
-@media(max-width:1150px){
-  .dashboard-grid{grid-template-columns:1fr}.ai-panel{position:static}
-  .kpi-grid{grid-template-columns:repeat(2,1fr)}
-}
-@media(max-width:860px){
-  .sidebar{position:static;width:100%;height:auto;padding:12px;display:block;border-right:0;border-bottom:1px solid var(--line)}
-  .brand{margin-bottom:10px}.nav{display:flex;overflow-x:auto}.nav-item{white-space:nowrap}.sidebar-spacer,.upload-card,.profile{display:none}
-  .main{margin-left:0;width:100%}.topbar{display:none}.page{padding:18px}.chart-row,.bottom-row,.report-grid,.settings-grid{grid-template-columns:1fr}.kpi-grid{grid-template-columns:1fr 1fr}
-  .page-head{gap:12px}.date-pill{display:none}.donut-wrap{justify-content:flex-start}.filter-row{grid-template-columns:1fr}
+/* WhatsApp-style conversational assistant */
+.chat-page-layout{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(280px,.6fr);gap:14px}
+.chat-window{background:#efeae2;border:1px solid #e2ded6;border-radius:20px;min-height:650px;display:flex;flex-direction:column;overflow:hidden;box-shadow:var(--shadow)}
+.chat-head{background:#fff;padding:13px 16px;border-bottom:1px solid #e5e5e5;display:flex;gap:10px;align-items:center}
+.bot-avatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(145deg,#5b8def,#9c83e4);color:#fff;display:grid;place-items:center;font-weight:900}.chat-head small{color:var(--muted)}
+.messages{padding:16px;display:flex;flex-direction:column;gap:9px;flex:1;overflow:auto;max-height:540px;background-image:radial-gradient(rgba(120,120,120,.06) 1px,transparent 1px);background-size:18px 18px}
+.msg{max-width:82%;padding:10px 12px;border-radius:10px;box-shadow:0 1px 2px rgba(0,0,0,.06);font-size:.82rem;line-height:1.45}
+.msg.user{align-self:flex-end;background:var(--wa);border-bottom-right-radius:3px}.msg.bot{align-self:flex-start;background:#fff;border-bottom-left-radius:3px}.msg-time{display:block;text-align:right;font-size:.58rem;color:#8a8a8a;margin-top:5px}
+.msg-chart{margin-top:9px;background:#f8f9fb;border-radius:10px;padding:9px;border:1px solid #edf0f4}.mini-bars{display:grid;gap:7px}.mini-row{display:grid;grid-template-columns:1.3fr 2fr auto;gap:7px;align-items:center;font-size:.68rem}.mini-track{height:7px;background:#e9edf4;border-radius:99px;overflow:hidden}.mini-track i{display:block;height:100%;background:linear-gradient(90deg,#5b8def,#9c83e4)}
+.chat-compose{background:#f7f7f7;border-top:1px solid #ddd;padding:10px;display:flex;gap:8px}.chat-compose input{flex:1;border:1px solid #ddd;border-radius:999px;padding:11px 14px;background:#fff;min-width:0}.send-btn{border:0;min-width:58px;height:42px;padding:0 14px;border-radius:999px;background:#5b8def;color:#fff;font-weight:800;font-size:.72rem}
+.suggest-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px}.suggest-list{display:grid;gap:8px}.suggest-btn{border:1px solid #dae4f4;background:#f9fbff;color:#385274;text-align:left;border-radius:11px;padding:10px;font-size:.75rem}.followups{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.followup{border:1px solid #dce5f3;background:#fff;color:#45617f;border-radius:999px;padding:6px 9px;font-size:.66rem}
+.typing{display:none;align-self:flex-start;background:#fff;padding:9px 12px;border-radius:10px;color:#8b8b8b;font-size:.72rem}.typing.show{display:block}
+
+/* Floating chat on every page */
+.fab{position:fixed;right:22px;bottom:22px;z-index:100;width:58px;height:58px;border:0;border-radius:50%;background:linear-gradient(145deg,#5b8def,#8f7edb);color:#fff;box-shadow:0 14px 34px rgba(65,89,145,.32);font-size:1.15rem;font-weight:900}
+.popchat{position:fixed;right:22px;bottom:92px;z-index:99;width:350px;max-width:calc(100vw - 24px);height:520px;background:#efeae2;border:1px solid #ddd;border-radius:20px;box-shadow:0 24px 60px rgba(28,38,70,.28);display:none;overflow:hidden}
+.popchat.open{display:flex;flex-direction:column}.popchat .messages{max-height:none;padding:12px}.popchat .msg{font-size:.76rem;max-width:87%}.close-chat{margin-left:auto;border:0;background:#f2f3f6;width:30px;height:30px;border-radius:50%}.open-full{border:0;background:#edf4ff;color:#4067ad;border-radius:999px;padding:6px 9px;font-size:.65rem;font-weight:700}
+
+/* Responsive */
+@media(max-width:1000px){.chat-page-layout{grid-template-columns:1fr}.suggest-card{order:-1}}
+@media(max-width:900px){
+  aside{position:sticky;top:0;width:100%;border-right:0;border-bottom:1px solid var(--line);padding:10px 12px;z-index:80}.shell{display:block}main{margin-left:0;width:100%;padding:14px}
+  nav{display:flex;overflow-x:auto;margin-top:8px;gap:7px;scrollbar-width:none}nav::-webkit-scrollbar{display:none}nav button{white-space:nowrap;flex:0 0 auto;border:1px solid #e9edf4;background:#fff;padding:9px 10px;font-size:.75rem}.note{display:none}
+  .hero-strip,.two,.three{grid-template-columns:1fr}.grid4{grid-template-columns:1fr 1fr}.chat-window{min-height:600px}
 }
 @media(max-width:560px){
-  .kpi-grid{grid-template-columns:1fr}.prompt-grid{grid-template-columns:1fr}.page-head h1{font-size:1.55rem}.donut-wrap{flex-direction:column;align-items:flex-start}.month-labels{font-size:.55rem}
+  main{padding:10px}header{display:block}h1{font-size:1.5rem}.grid4{grid-template-columns:1fr}.snapshot-grid{grid-template-columns:1fr 1fr}.hero-number{font-size:2.25rem}
+  .donut-wrap{flex-direction:column;align-items:flex-start}.product-row{grid-template-columns:1fr;gap:4px}.msg{max-width:90%}.chat-window{min-height:calc(100vh - 180px);border-radius:14px}
+  .popchat{right:8px;bottom:78px;width:calc(100vw - 16px);height:68vh;border-radius:16px}.fab{right:14px;bottom:14px;width:54px;height:54px}
 }
-
-
-/* =========================================================
-   SalesSense responsive mobile enhancements
-   ========================================================= */
-
-.mobile-nav-label,
-.mobile-tip { display:none; }
-
-.content-column,
-.card,
-.kpi-card,
-.ai-panel,
-.table-card,
-.region-card,
-.chart-card,
-.donut-card { min-width:0; }
-
-svg, img { max-width:100%; }
-
-.table-wrap {
-    width:100%;
-    overflow-x:auto;
-    -webkit-overflow-scrolling:touch;
-}
-
-/* Tablet */
-@media (max-width:1050px) {
-    .dashboard-grid { grid-template-columns:1fr; }
-    .ai-panel { position:static; top:auto; }
-    .chart-row,
-    .bottom-row { grid-template-columns:1fr 1fr; }
-}
-
-/* Phones and small tablets */
-@media (max-width:760px) {
-    body { overflow-x:hidden; }
-
-    .app-shell {
-        display:block;
-        min-height:100vh;
-    }
-
-    .sidebar {
-        position:sticky;
-        top:0;
-        left:auto;
-        bottom:auto;
-        width:100%;
-        height:auto;
-        padding:10px 12px 8px;
-        display:block;
-        background:rgba(255,255,255,.98);
-        border-right:0;
-        border-bottom:1px solid var(--line);
-        z-index:50;
-        backdrop-filter:blur(10px);
-    }
-
-    .brand {
-        margin:0 0 8px;
-        gap:9px;
-    }
-    .brand-icon {
-        width:27px;
-        height:27px;
-    }
-    .brand-icon span { width:6px; }
-    .brand-icon span:nth-child(1){height:10px}
-    .brand-icon span:nth-child(2){height:17px}
-    .brand-icon span:nth-child(3){height:24px}
-    .brand-name { font-size:1.05rem; }
-    .brand-sub {
-        font-size:.62rem;
-        max-width:none;
-    }
-
-    .mobile-nav-label {
-        display:block;
-        font-size:.66rem;
-        color:#8490a4;
-        margin:2px 0 5px;
-    }
-
-    .nav {
-        display:flex;
-        gap:7px;
-        overflow-x:auto;
-        padding-bottom:3px;
-        scrollbar-width:none;
-        -webkit-overflow-scrolling:touch;
-    }
-    .nav::-webkit-scrollbar { display:none; }
-
-    .nav-item {
-        flex:0 0 auto;
-        min-height:42px;
-        padding:9px 11px;
-        border:1px solid #e7edf6;
-        border-radius:10px;
-        background:#fff;
-        white-space:nowrap;
-        font-size:.78rem;
-    }
-    .nav-item.active {
-        background:#e8f2ff;
-        border-color:#cddffc;
-    }
-    .nav-icon {
-        width:auto;
-        font-size:.9rem;
-    }
-
-    .sidebar-spacer,
-    .sidebar > .upload-card,
-    .sidebar > .profile {
-        display:none;
-    }
-
-    .main {
-        margin-left:0;
-        width:100%;
-        min-width:0;
-    }
-
-    .topbar { display:none; }
-
-    .page {
-        padding:15px 12px 28px;
-    }
-
-    .page-head {
-        display:block;
-        margin-bottom:14px;
-    }
-    .page-head h1 { font-size:1.55rem; }
-    .page-head p {
-        font-size:.88rem;
-        line-height:1.45;
-    }
-    .date-pill { display:none; }
-
-    .notice {
-        font-size:.74rem;
-        line-height:1.4;
-        padding:9px 10px;
-        margin-bottom:8px;
-    }
-    .mobile-tip {
-        display:block;
-        color:#738197;
-        font-size:.7rem;
-        margin:0 0 13px;
-    }
-
-    .kpi-grid {
-        grid-template-columns:repeat(2,minmax(0,1fr));
-        gap:9px;
-    }
-    .kpi-card {
-        min-height:112px;
-        padding:13px;
-        border-radius:14px;
-    }
-    .kpi-label { font-size:.72rem; }
-    .kpi-value {
-        font-size:1.15rem;
-        overflow-wrap:anywhere;
-    }
-    .product-name { font-size:.85rem; }
-    .kpi-delta,
-    .kpi-muted { font-size:.68rem; }
-
-    .dashboard-grid,
-    .chart-row,
-    .bottom-row,
-    .report-grid,
-    .settings-grid,
-    .filter-row {
-        grid-template-columns:1fr;
-        gap:10px;
-    }
-
-    .card {
-        border-radius:14px;
-        padding:13px;
-    }
-    .card h3 { font-size:.95rem; }
-
-    .line-chart { height:220px; }
-    .month-labels {
-        font-size:.55rem;
-        gap:0;
-    }
-    .mini-select {
-        font-size:.68rem;
-        padding:7px 9px;
-    }
-
-    .donut-wrap {
-        flex-direction:column;
-        align-items:center;
-        gap:12px;
-    }
-    .donut {
-        width:165px;
-        height:165px;
-    }
-    .donut:after { inset:38px; }
-    .legend { width:100%; }
-
-    table {
-        min-width:560px;
-        font-size:.72rem;
-    }
-    th, td { white-space:nowrap; }
-
-    .region-row {
-        grid-template-columns:54px minmax(0,1fr) 30px;
-        gap:7px;
-    }
-
-    .ai-panel { position:static; }
-    .chat {
-        max-width:94%;
-        font-size:.76rem;
-    }
-    .chat.user { margin-left:18px; }
-    .prompt-grid { grid-template-columns:1fr; }
-    .prompt-chip,
-    .suggestion {
-        min-height:44px;
-        font-size:.76rem;
-    }
-    .ask-box { gap:6px; }
-    .ask-box input {
-        min-width:0;
-        font-size:.8rem;
-    }
-    .ask-box button {
-        min-width:46px;
-        min-height:44px;
-    }
-
-    .filter-box { min-height:64px; }
-
-    .report-card { padding:16px; }
-    .form-card input,
-    .form-card select,
-    .primary-btn,
-    .secondary-btn {
-        min-height:44px;
-    }
-}
-
-/* Very small phones */
-@media (max-width:420px) {
-    .page {
-        padding-left:10px;
-        padding-right:10px;
-    }
-    .kpi-grid { grid-template-columns:1fr; }
-    .kpi-card { min-height:auto; }
-    .page-head h1 { font-size:1.4rem; }
-    .month-labels span:nth-child(even) { display:none; }
-}
-
 </style>
 </head>
 <body>
-  <div class="app-shell">
-    <aside class="sidebar">
-      <div class="brand">
-        <div class="brand-icon">
-          <span></span><span></span><span></span>
-        </div>
-        <div>
-          <div class="brand-name">SalesSense</div>
-          <div class="brand-sub">Understand your sales, simply.</div>
-        </div>
-      </div>
+<div class="shell">
+<aside>
+  <div class="brand-row"><div class="logo">S</div><div><div class="brand">SalesSense</div><div class="sub">Grandsandwich Cafe demo</div></div></div>
+  <nav>
+    <button class="active" data-page="dash">Dashboard</button>
+    <button data-page="ask">Ask SalesSense</button>
+    <button data-page="data">Sales Data</button>
+    <button data-page="reports">Reports</button>
+  </nav>
+  <div class="note"><b>Demo only.</b><br>This prototype uses simulated data inspired by a local sandwich café. It does not represent Grandsandwich Cafe's actual sales, menu, customers or financial performance.</div>
+</aside>
 
-      <div class="mobile-nav-label">Explore SalesSense</div>
-      <nav class="nav">
-        <button class="nav-item active" data-page="dashboard">
-          <span class="nav-icon">⌂</span><span>Dashboard</span>
-        </button>
-        <button class="nav-item" data-page="ask-ai">
-          <span class="nav-icon">◉</span><span>Ask SalesSense</span>
-        </button>
-        <button class="nav-item" data-page="sales-data">
-          <span class="nav-icon">▦</span><span>Sales Data</span>
-        </button>
-        <button class="nav-item" data-page="reports">
-          <span class="nav-icon">▤</span><span>Reports</span>
-        </button>
-        <button class="nav-item" data-page="settings">
-          <span class="nav-icon">⚙</span><span>Settings</span>
-        </button>
-      </nav>
+<main>
+<section id="dash" class="page active">
+<header><div><span class="badge">DEMO BUSINESS</span><h1 style="margin-top:8px">Grandsandwich Cafe — Madang</h1><p>Illustrative sales analytics for a sandwich café.</p></div><span class="badge">Jan–Aug 2026</span></header>
+<div class="hero-strip">
+  <div class="hero-card"><h2>Business Snapshot</h2><div class="hero-number">BND 50,422</div><div class="hero-sub">Total demo revenue across 3,605 orders</div><div class="hero-bullets"><span class="pill">Top product: Assorted Sandwich Platter</span><span class="pill">Best day: Friday</span><span class="pill">Strongest period: Lunch</span></div></div>
+  <div class="snapshot-card"><div class="snapshot-grid"><div class="snapshot-box sg"><span>Month-on-month growth</span><b>+0.4%</b></div><div class="snapshot-box sp"><span>Items sold</span><b>7,373</b></div><div class="snapshot-box sy"><span>Best month</span><b>August</b></div><div class="snapshot-box sl"><span>Avg. order</span><b>BND 13.99</b></div></div></div>
+</div>
+<div class="grid4">
+  <div class="card"><div class="label">Total Revenue</div><div class="value">BND 50,422</div></div>
+  <div class="card"><div class="label">Total Orders</div><div class="value">3,605</div></div>
+  <div class="card"><div class="label">Average Order Value</div><div class="value">BND 13.99</div></div>
+  <div class="card"><div class="label">Top Product</div><div class="value" style="font-size:1rem">Assorted Sandwich Platter</div><div class="delta">BND 8,873</div></div>
+</div>
+<div class="two">
+  <div class="card"><div class="section-title"><h3>Monthly Revenue Trend</h3><span class="small-muted">Jan–Aug 2026</span></div><svg viewBox="0 0 700 260" style="width:100%;height:250px"><defs><linearGradient id="areaG" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="#5b8def" stop-opacity=".24"/><stop offset="100%" stop-color="#5b8def" stop-opacity="0"/></linearGradient></defs><g stroke="#e9eef5"><line x1="45" y1="40" x2="680" y2="40"/><line x1="45" y1="90" x2="680" y2="90"/><line x1="45" y1="140" x2="680" y2="140"/><line x1="45" y1="190" x2="680" y2="190"/><line x1="45" y1="240" x2="680" y2="240"/></g><path id="area" fill="url(#areaG)"></path><polyline id="trend" fill="none" stroke="#5b8def" stroke-width="4"></polyline></svg><div id="monthLabels" style="display:grid;grid-template-columns:repeat(8,1fr);font-size:.65rem;color:#8793a5;text-align:center"></div></div>
+  <div class="card"><div class="section-title"><h3>Order Channel Mix</h3><span class="small-muted">Dine-in vs Takeaway</span></div><div class="donut-wrap"><div class="donut"><div class="donut-center"><b>56.5%</b><span>Takeaway</span></div></div><div><p><b>Takeaway</b> — 56.5%</p><p><b>Dine-in</b> — 43.5%</p></div></div></div>
+</div>
+<div class="three">
+  <div class="card"><div class="section-title"><h3>Top 5 Products</h3><span class="small-muted">By revenue</span></div><div id="productBars" class="product-bars"></div></div>
+  <div class="card"><div class="section-title"><h3>Sales by Day</h3><span class="small-muted">Demo totals</span></div><div id="dayBars" class="daybars"></div><div style="margin-top:10px;font-size:.74rem"><b>Friday</b> generated the highest total sales.</div></div>
+  <div class="card"><div class="section-title"><h3>Category Performance</h3><span class="small-muted">Revenue contribution</span></div><div id="categoryBars"></div></div>
+</div>
+</section>
 
-      <div class="sidebar-spacer"></div>
+<section id="ask" class="page">
+<header><div><span class="badge">CONVERSATIONAL ANALYTICS</span><h1 style="margin-top:8px">Ask SalesSense</h1><p>A professional conversational assistant with follow-up questions, mini charts and gentle investigation suggestions.</p></div></header>
+<div class="chat-page-layout">
+  <div class="chat-window">
+    <div class="chat-head"><div class="bot-avatar">S</div><div><b>SalesSense</b><br><small>Business analytics assistant • Demo data</small></div></div>
+    <div id="fullMessages" class="messages">
+      <div class="msg bot">Good morning. I can help you explore the Grandsandwich demo sales data. What would you like to understand?<span class="msg-time">09:41</span></div>
+      <div class="msg user">Which product performed best?<span class="msg-time">09:42</span></div>
+      <div id="starterBot" class="msg bot"></div>
+    </div>
+    <div id="fullTyping" class="typing">SalesSense is analysing the demo data…</div>
+    <div class="chat-compose"><input id="fullInput" placeholder="Ask SalesSense about your sales..."><button class="send-btn" id="fullSend">Send</button></div>
+  </div>
+  <div class="suggest-card">
+    <h3>Suggested questions</h3>
+    <p style="color:var(--muted);font-size:.76rem">Try one of these to explore the demo conversationally.</p>
+    <div class="suggest-list">
+      <button class="suggest-btn ask-prompt">What was my best month?</button>
+      <button class="suggest-btn ask-prompt">Which product is underperforming?</button>
+      <button class="suggest-btn ask-prompt">Compare dine-in and takeaway</button>
+      <button class="suggest-btn ask-prompt">When are my busiest periods?</button>
+      <button class="suggest-btn ask-prompt">What should I investigate next?</button>
+      <button class="suggest-btn ask-prompt">Compare the top two products</button>
+    </div>
+    <div style="margin-top:14px;padding:11px;background:#fff7e5;border-radius:12px;font-size:.7rem;color:#715b28"><b>Prototype behaviour:</b> SalesSense explains patterns and suggests areas worth investigating. It does not make autonomous business decisions.</div>
+  </div>
+</div>
+</section>
 
-      <div class="upload-card">
-        <div class="upload-icon">⇧</div>
-        <div class="upload-title">Upload New Data</div>
-        <div class="upload-sub">CSV or Excel (.xlsx)</div>
-        <label class="upload-btn">
-          Upload File
-          <input id="file-input" type="file" accept=".csv,.xlsx,.xls" />
-        </label>
-        <div id="file-name" class="file-name"></div>
-      </div>
+<section id="data" class="page">
+<header><div><span class="badge">SYNTHETIC DATA</span><h1 style="margin-top:8px">Sales Data</h1><p>Preview of the simulated dataset used for the concept prototype.</p></div></header>
+<div class="card data-scroll"><table><thead><tr><th>Order</th><th>Date</th><th>Time</th><th>Channel</th><th>Product</th><th>Qty</th><th>Revenue</th></tr></thead><tbody><tr><td>10001</td><td>2026-01-01</td><td>20:40</td><td>Takeaway</td><td>Assorted Sandwich Platter</td><td>1</td><td>BND 28.00</td></tr><tr><td>10002</td><td>2026-01-01</td><td>10:00</td><td>Takeaway</td><td>Assorted Sandwich Platter</td><td>1</td><td>BND 28.00</td></tr><tr><td>10002</td><td>2026-01-01</td><td>10:00</td><td>Takeaway</td><td>French Fries</td><td>1</td><td>BND 3.50</td></tr><tr><td>10003</td><td>2026-01-01</td><td>10:40</td><td>Takeaway</td><td>Iced Coffee</td><td>1</td><td>BND 3.80</td></tr><tr><td>10003</td><td>2026-01-01</td><td>10:40</td><td>Takeaway</td><td>Assorted Sandwich Platter</td><td>1</td><td>BND 28.00</td></tr><tr><td>10004</td><td>2026-01-01</td><td>13:20</td><td>Takeaway</td><td>Tuna Melt Sandwich</td><td>1</td><td>BND 7.00</td></tr><tr><td>10005</td><td>2026-01-01</td><td>12:30</td><td>Dine-in</td><td>Egg Mayo Sandwich</td><td>1</td><td>BND 6.00</td></tr><tr><td>10005</td><td>2026-01-01</td><td>12:30</td><td>Dine-in</td><td>Tuna Melt Sandwich</td><td>1</td><td>BND 7.00</td></tr><tr><td>10006</td><td>2026-01-01</td><td>14:10</td><td>Takeaway</td><td>Tuna Melt Sandwich</td><td>1</td><td>BND 7.00</td></tr><tr><td>10006</td><td>2026-01-01</td><td>14:10</td><td>Takeaway</td><td>Iced Coffee</td><td>1</td><td>BND 3.80</td></tr><tr><td>10007</td><td>2026-01-01</td><td>08:40</td><td>Dine-in</td><td>Hot Latte</td><td>1</td><td>BND 4.20</td></tr><tr><td>10008</td><td>2026-01-01</td><td>13:50</td><td>Takeaway</td><td>Smoked Beef Sandwich</td><td>1</td><td>BND 8.50</td></tr><tr><td>10009</td><td>2026-01-01</td><td>15:50</td><td>Takeaway</td><td>Veggie Wrap</td><td>1</td><td>BND 6.50</td></tr><tr><td>10009</td><td>2026-01-01</td><td>15:50</td><td>Takeaway</td><td>Tuna Melt Sandwich</td><td>1</td><td>BND 7.00</td></tr></tbody></table></div>
+</section>
 
-      <div class="profile">
-        <div class="avatar">DS</div>
-        <div>
-          <div class="profile-name">Demo User</div>
-          <div class="profile-sub">SME Business</div>
-        </div>
-      </div>
-    </aside>
 
-    <main class="main">
-      <div class="topbar">
-        <div class="mobile-brand">SalesSense</div>
-        <div class="topbar-right">
-          <div class="top-avatar">◉</div>
-          <div>
-            <div class="top-name">Demo User</div>
-            <div class="top-sub">SME Business</div>
-          </div>
-        </div>
-      </div>
+<section id="reports" class="page">
+<header>
+  <div>
+    <span class="badge">DEMO REPORTS</span>
+    <h1 style="margin-top:8px">Reports</h1>
+    <p>Examples of the types of reports SalesSense could generate from uploaded sales data.</p>
+  </div>
+  <span class="badge">Illustrative only</span>
+</header>
 
-      <section id="dashboard" class="page active-page">
-        <div class="page-head">
-          <div>
-            <h1>Welcome back!</h1>
-            <p>Here’s an overview of your sales performance.</p>
-          </div>
-          <div class="date-pill">📅 1 Jan 2026 – 31 Dec 2026⌄</div>
-        </div>
+<div class="card" style="margin-bottom:12px;background:linear-gradient(135deg,#eef5ff,#f7f2ff)">
+  <div class="section-title"><h3>What goes in a SalesSense report?</h3><span class="small-muted">Example structure</span></div>
+  <p style="font-size:.82rem;line-height:1.6;margin-bottom:0">
+    Each report can combine <b>key statistics</b>, <b>visual summaries</b>, <b>plain-language findings</b> and
+    <b>areas worth investigating</b>. The examples below use the same simulated Grandsandwich-style dataset as this prototype.
+  </p>
+</div>
 
-        <div class="notice">Concept prototype — sample data is illustrative and not a research result.</div>
-<div class="mobile-tip">Swipe the menu above to explore the prototype.</div>
-
-        <div class="dashboard-grid">
-          <div class="content-column">
-            <div class="kpi-grid">
-              <div class="kpi-card">
-                <div class="kpi-row"><span>Total Sales</span><div class="icon-chip">◫</div></div>
-                <div class="kpi-value">$125,430</div>
-                <div class="kpi-up">↑ 12.5%</div>
-                <div class="muted">vs. previous period</div>
-              </div>
-              <div class="kpi-card">
-                <div class="kpi-row"><span>Total Orders</span><div class="icon-chip">🛒</div></div>
-                <div class="kpi-value">1,240</div>
-                <div class="kpi-up">↑ 8.3%</div>
-                <div class="muted">vs. previous period</div>
-              </div>
-              <div class="kpi-card">
-                <div class="kpi-row"><span>Average Order Value</span><div class="icon-chip">◇</div></div>
-                <div class="kpi-value">$101.15</div>
-                <div class="kpi-up">↑ 3.2%</div>
-                <div class="muted">vs. previous period</div>
-              </div>
-              <div class="kpi-card">
-                <div class="kpi-row"><span>Top Product</span><div class="icon-chip">★</div></div>
-                <div class="kpi-value product-name">Wireless Headphones</div>
-                <div class="muted">$18,450</div>
-              </div>
-            </div>
-
-            <div class="chart-row">
-              <div class="card chart-card">
-                <div class="card-title-row">
-                  <h3>Sales Trend</h3>
-                  <div class="mini-select">Monthly⌄</div>
-                </div>
-                <svg class="line-chart" viewBox="0 0 760 280" preserveAspectRatio="none" aria-label="Sales trend chart">
-                  <defs>
-                    <linearGradient id="areaGradient" x1="0" x2="0" y1="0" y2="1">
-                      <stop offset="0%" stop-color="#4c8cff" stop-opacity=".20"/>
-                      <stop offset="100%" stop-color="#4c8cff" stop-opacity="0"/>
-                    </linearGradient>
-                  </defs>
-                  <g class="grid-lines">
-                    <line x1="60" y1="50" x2="730" y2="50"/>
-                    <line x1="60" y1="100" x2="730" y2="100"/>
-                    <line x1="60" y1="150" x2="730" y2="150"/>
-                    <line x1="60" y1="200" x2="730" y2="200"/>
-                    <line x1="60" y1="250" x2="730" y2="250"/>
-                  </g>
-                  <path class="area" d="M60 225 L115 204 L170 185 L225 202 L280 176 L335 168 L390 143 L445 150 L500 132 L555 104 L610 86 L665 67 L720 78 L720 250 L60 250 Z"/>
-                  <polyline class="trend-line" points="60,225 115,204 170,185 225,202 280,176 335,168 390,143 445,150 500,132 555,104 610,86 665,67 720,78"/>
-                  <g class="points">
-                    <circle cx="60" cy="225" r="4"/><circle cx="115" cy="204" r="4"/><circle cx="170" cy="185" r="4"/>
-                    <circle cx="225" cy="202" r="4"/><circle cx="280" cy="176" r="4"/><circle cx="335" cy="168" r="4"/>
-                    <circle cx="390" cy="143" r="4"/><circle cx="445" cy="150" r="4"/><circle cx="500" cy="132" r="4"/>
-                    <circle cx="555" cy="104" r="4"/><circle cx="610" cy="86" r="4"/><circle cx="665" cy="67" r="4"/>
-                    <circle cx="720" cy="78" r="4"/>
-                  </g>
-                </svg>
-                <div class="month-labels">
-                  <span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span>
-                  <span>Jul</span><span>Aug</span><span>Sep</span><span>Oct</span><span>Nov</span><span>Dec</span>
-                </div>
-              </div>
-
-              <div class="card donut-card">
-                <h3>Sales by Product Category</h3>
-                <div class="donut-wrap">
-                  <div class="donut">
-                    <div class="donut-center">
-                      <strong>$125,430</strong>
-                      <span>Total Sales</span>
-                    </div>
-                  </div>
-                  <div class="legend">
-                    <div><span class="dot d1"></span>Electronics <b>38%</b></div>
-                    <div><span class="dot d2"></span>Accessories <b>24%</b></div>
-                    <div><span class="dot d3"></span>Home & Living <b>18%</b></div>
-                    <div><span class="dot d4"></span>Wearables <b>12%</b></div>
-                    <div><span class="dot d5"></span>Others <b>8%</b></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="bottom-row">
-              <div class="card table-card">
-                <h3>Top 5 Products</h3>
-                <div class="table-wrap">
-                  <table>
-                    <thead><tr><th>#</th><th>Product</th><th>Units Sold</th><th>Total Sales</th></tr></thead>
-                    <tbody>
-                      <tr><td>1</td><td>Wireless Headphones</td><td>320</td><td>$18,450</td></tr>
-                      <tr><td>2</td><td>Portable Charger</td><td>280</td><td>$14,600</td></tr>
-                      <tr><td>3</td><td>Bluetooth Speaker</td><td>210</td><td>$12,300</td></tr>
-                      <tr><td>4</td><td>Smart Watch</td><td>180</td><td>$11,250</td></tr>
-                      <tr><td>5</td><td>Laptop Stand</td><td>150</td><td>$9,800</td></tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-
-              <div class="card region-card">
-                <h3>Sales by Region</h3>
-                <div class="region-row"><span>Central</span><div class="bar-track"><div class="bar b1" style="width:88%"></div></div><b>28%</b></div>
-                <div class="region-row"><span>West</span><div class="bar-track"><div class="bar b2" style="width:76%"></div></div><b>24%</b></div>
-                <div class="region-row"><span>East</span><div class="bar-track"><div class="bar b3" style="width:63%"></div></div><b>20%</b></div>
-                <div class="region-row"><span>North</span><div class="bar-track"><div class="bar b4" style="width:51%"></div></div><b>16%</b></div>
-                <div class="region-row"><span>South</span><div class="bar-track"><div class="bar b5" style="width:39%"></div></div><b>12%</b></div>
-              </div>
-            </div>
-          </div>
-
-          <aside class="ai-panel card">
-            <div class="ai-title">💬 Ask SalesSense</div>
-            <p class="ai-sub">Ask simple questions about your sales and get clear explanations.</p>
-            <div class="chat user">What were my top performing products this year?</div>
-            <div class="chat ai">
-              <b>Your top performing products this year were:</b><br><br>
-              1. <strong>Wireless Headphones</strong><br>
-              2. <strong>Portable Charger</strong><br>
-              3. <strong>Bluetooth Speaker</strong><br><br>
-              These three products contributed strongly to total sales.
-            </div>
-            <button class="suggestion" data-q="Show me sales by month">Show me sales by month ↗</button>
-            <button class="suggestion" data-q="Which product had the highest growth?">Which product had the highest growth? ↗</button>
-            <button class="suggestion" data-q="Compare sales by region">Compare sales by region ↗</button>
-            <button class="suggestion" data-q="Why did sales increase in November?">Why did sales increase in November? ↗</button>
-            <div class="ask-box">
-              <input id="quick-question" placeholder="Ask a question..." />
-              <button id="quick-send">➤</button>
-            </div>
-          </aside>
-        </div>
-      </section>
-
-      <section id="ask-ai" class="page">
-        <div class="page-head">
-          <div><h1>Ask SalesSense</h1><p>Explore your business data using simple questions.</p></div>
-        </div>
-        <div class="notice">Example guided interaction for the concept prototype.</div>
-        <div class="card ai-page-card">
-          <div id="chat-log" class="chat-log">
-            <div class="chat user">What were my top-performing products this year?</div>
-            <div class="chat ai">Your top-performing products were <strong>Wireless Headphones</strong>, <strong>Portable Charger</strong>, and <strong>Bluetooth Speaker</strong>.</div>
-          </div>
-          <div class="prompt-grid">
-            <button class="prompt-chip">Show me sales by month</button>
-            <button class="prompt-chip">Which product had the highest growth?</button>
-            <button class="prompt-chip">Compare sales by region</button>
-            <button class="prompt-chip">Why did sales increase in November?</button>
-          </div>
-          <div class="ask-box large">
-            <input id="ai-input" placeholder="Ask anything about your sales..." />
-            <button id="ai-send">Send</button>
-          </div>
-        </div>
-      </section>
-
-      <section id="sales-data" class="page">
-        <div class="page-head">
-          <div><h1>Sales Data</h1><p>View, filter and upload your business records.</p></div>
-        </div>
-        <div class="filter-row">
-          <div class="filter-box">Date range<br><strong>Jan – Dec 2026</strong></div>
-          <div class="filter-box">Products<br><strong>All products</strong></div>
-          <div class="filter-box">Regions<br><strong>All regions</strong></div>
-        </div>
-        <div class="card data-card">
-          <h3>Data Preview</h3>
-          <div class="table-wrap">
-            <table>
-              <thead><tr><th>Date</th><th>Product</th><th>Category</th><th>Region</th><th>Qty</th><th>Revenue</th></tr></thead>
-              <tbody>
-                <tr><td>2026-01-04</td><td>Wireless Headphones</td><td>Electronics</td><td>Central</td><td>3</td><td>$174</td></tr>
-                <tr><td>2026-01-06</td><td>Portable Charger</td><td>Accessories</td><td>West</td><td>4</td><td>$168</td></tr>
-                <tr><td>2026-01-09</td><td>Bluetooth Speaker</td><td>Electronics</td><td>East</td><td>2</td><td>$82</td></tr>
-                <tr><td>2026-01-10</td><td>Smart Watch</td><td>Wearables</td><td>Central</td><td>1</td><td>$63</td></tr>
-                <tr><td>2026-01-12</td><td>Laptop Stand</td><td>Home & Living</td><td>South</td><td>2</td><td>$98</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-        <div class="card upload-big">
-          <div class="upload-icon big">⇧</div>
-          <h3>Upload New Data</h3>
-          <p>CSV or Excel files can be added here in the future system.</p>
-          <button class="primary-btn" id="fake-upload">Choose File</button>
-        </div>
-      </section>
-
-      <section id="reports" class="page">
-        <div class="page-head">
-          <div><h1>Reports</h1><p>Example reports generated from business data.</p></div>
-        </div>
-        <div class="report-grid">
-          <div class="report-card blue">
-            <div class="report-icon">▤</div>
-            <h3>Monthly Sales Report</h3>
-            <p>Revenue, order volume, products and monthly trends.</p>
-            <button class="secondary-btn">Preview</button>
-          </div>
-          <div class="report-card green">
-            <div class="report-icon">★</div>
-            <h3>Product Performance</h3>
-            <p>Top products, low performers and category contribution.</p>
-            <button class="secondary-btn">Preview</button>
-          </div>
-          <div class="report-card purple">
-            <div class="report-icon">✦</div>
-            <h3>Business Insight Summary</h3>
-            <p>Plain-language summary of notable patterns and changes.</p>
-            <button class="secondary-btn">Preview</button>
-          </div>
-        </div>
-        <div class="card data-card">
-          <h3>Recent Reports</h3>
-          <div class="table-wrap">
-            <table>
-              <thead><tr><th>Report</th><th>Type</th><th>Status</th></tr></thead>
-              <tbody>
-                <tr><td>August Sales Summary</td><td>Monthly</td><td><span class="status-ready">Ready</span></td></tr>
-                <tr><td>Q2 Product Performance</td><td>Product</td><td><span class="status-ready">Ready</span></td></tr>
-                <tr><td>Regional Sales Review</td><td>Regional</td><td><span class="status-ready">Ready</span></td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-
-      <section id="settings" class="page">
-        <div class="page-head">
-          <div><h1>Settings</h1><p>Example account and dashboard preferences.</p></div>
-        </div>
-        <div class="settings-grid">
-          <div class="card form-card">
-            <label>Business Name<input value="Demo SME" /></label>
-            <label>Industry<select><option>Retail</option><option>Food & Beverage</option><option>Online Business</option><option>Services</option></select></label>
-            <label>Currency<select><option>BND</option><option>USD</option><option>MYR</option><option>SGD</option></select></label>
-            <label>Default period<select><option>This year</option><option>This month</option><option>Last 3 months</option></select></label>
-            <button class="primary-btn">Save Settings</button>
-          </div>
-          <div class="card settings-side">
-            <h3>Preferences</h3>
-            <div class="toggle-row"><span>Show AI explanations automatically</span><div class="switch on"></div></div>
-            <div class="toggle-row"><span>Monthly summary notifications</span><div class="switch"></div></div>
-            <div class="toggle-row"><span>Compact dashboard view</span><div class="switch"></div></div>
-          </div>
-        </div>
-      </section>
-    </main>
+<div class="three">
+  <div class="card" style="background:#eef5ff">
+    <div style="font-size:1.7rem"></div>
+    <h3>Monthly Sales Summary</h3>
+    <p class="small-muted">Example report preview</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0">
+      <div class="snapshot-box" style="background:#fff"><span>Total revenue</span><b>BND 50,422</b></div>
+      <div class="snapshot-box" style="background:#fff"><span>Total orders</span><b>3,605</b></div>
+      <div class="snapshot-box" style="background:#fff"><span>Avg. order</span><b>BND 13.99</b></div>
+      <div class="snapshot-box" style="background:#fff"><span>Best month</span><b>August</b></div>
+    </div>
+    <p style="font-size:.76rem;line-height:1.5"><b>Example finding:</b> August recorded the highest monthly revenue at approximately BND 7,100. A full report could compare this with previous months and highlight changes in order volume and average order value.</p>
   </div>
 
-  <div id="toast" class="toast"></div>
-  <script>
+  <div class="card" style="background:#eef9f4">
+    <div style="font-size:1.7rem"></div>
+    <h3>Product Performance Report</h3>
+    <p class="small-muted">Example report preview</p>
+    <div style="margin:12px 0">
+      <div class="snapshot-box" style="background:#fff;margin-bottom:8px"><span>Highest revenue product</span><b style="font-size:1rem">Assorted Sandwich Platter</b><span>BND 8,873</span></div>
+      <div class="snapshot-box" style="background:#fff"><span>Lowest revenue product</span><b style="font-size:1rem">Iced Lemon Tea</b><span>BND 1,173</span></div>
+    </div>
+    <p style="font-size:.76rem;line-height:1.5"><b>Example finding:</b> Assorted Sandwich Platter is the strongest product by revenue. The report could help a user compare high- and low-performing products before investigating factors such as demand, pricing or availability.</p>
+  </div>
 
-const navButtons = document.querySelectorAll('.nav-item');
-const pages = document.querySelectorAll('.page');
-const toast = document.getElementById('toast');
+  <div class="card" style="background:#f5efff">
+    <div style="font-size:1.7rem"></div>
+    <h3>Business Insight Report</h3>
+    <p class="small-muted">Example report preview</p>
+    <div class="snapshot-box" style="background:#fff;margin:12px 0">
+      <span>SalesSense highlights</span>
+      <b style="font-size:1rem">Friday is the strongest day</b>
+      <span>56.5% of demo orders are takeaway</span>
+    </div>
+    <p style="font-size:.76rem;line-height:1.5"><b>Example interpretation:</b> SalesSense could flag patterns that deserve further investigation, such as why Friday performs strongly or whether takeaway customers purchase a different mix of products.</p>
+  </div>
+</div>
 
-function showPage(id){
-  pages.forEach(p => p.classList.toggle('active-page', p.id === id));
-  navButtons.forEach(b => b.classList.toggle('active', b.dataset.page === id));
-  window.scrollTo({top:0, behavior:'smooth'});
+<div class="two">
+  <div class="card">
+    <div class="section-title"><h3>Example report sections</h3><span class="small-muted">Suggested contents</span></div>
+    <div style="display:grid;gap:8px;font-size:.78rem">
+      <div class="snapshot-box sg"><b style="font-size:.9rem">1. Executive Summary</b><span>Short overview of the most important findings.</span></div>
+      <div class="snapshot-box sy"><b style="font-size:.9rem">2. Key Performance Indicators</b><span>Revenue, orders, average order value and other selected KPIs.</span></div>
+      <div class="snapshot-box sp"><b style="font-size:.9rem">3. Trends & Visualisations</b><span>Charts showing monthly, product, day and channel performance.</span></div>
+      <div class="snapshot-box sl"><b style="font-size:.9rem">4. SalesSense Insights</b><span>Plain-language explanations and suggested areas for further investigation.</span></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="section-title"><h3>Example SalesSense summary</h3><span class="small-muted">Generated-style output</span></div>
+    <div style="background:#f8f9fb;border:1px solid #edf0f4;border-radius:14px;padding:14px;font-size:.8rem;line-height:1.6">
+      <b>SalesSense:</b><br><br>
+      During the selected demo period, the business generated approximately <b>BND 50,422</b> from
+      <b>3,605 orders</b>. <b>Assorted Sandwich Platter</b> was the strongest product by revenue, while
+      <b>Friday</b> recorded the highest overall sales. These patterns may be useful starting points for examining
+      product demand, customer ordering behaviour and busy trading periods.
+    </div>
+    <p class="small-muted" style="margin-top:10px">In the proposed full system, report content would be generated from the business data uploaded by the user.</p>
+  </div>
+</div>
+</section>
+</main>
+</div>
+
+<button id="fab" class="fab" aria-label="Open SalesSense">S</button>
+<div id="popchat" class="popchat">
+  <div class="chat-head"><div class="bot-avatar">S</div><div><b>SalesSense</b><br><small>Ask about the demo data</small></div><button id="openFull" class="open-full">Open full chat</button><button id="closeChat" class="close-chat">×</button></div>
+  <div id="popMessages" class="messages"><div class="msg bot">Hello. What would you like to know about the sales data?<div class="followups"><button class="followup popup-prompt">Best product?</button><button class="followup popup-prompt">Best month?</button><button class="followup popup-prompt">Takeaway vs dine-in?</button></div></div></div>
+  <div id="popTyping" class="typing">SalesSense is analysing…</div>
+  <div class="chat-compose"><input id="popInput" placeholder="Ask a question..."><button id="popSend" class="send-btn">Send</button></div>
+</div>
+
+<script>
+const facts={"topProduct": "Assorted Sandwich Platter", "topProductRevenue": 8873.2, "secondProduct": "Smoked Beef Sandwich", "secondProductRevenue": 6989.55, "lowestProduct": "Iced Lemon Tea", "lowestProductRevenue": 1172.75, "bestDay": "Friday", "bestMonth": "August", "bestMonthRevenue": 7100.32, "topDaypart": "Lunch", "takeawayPct": 56.5, "dineinPct": 43.5, "growth": 0.4, "aov": 13.99, "totalRevenue": 50421.63, "totalOrders": 3605};
+const monthVals=[5965.91, 5006.22, 6725.82, 5862.61, 6000.49, 6687.04, 7073.22, 7100.32];
+const monthLabels=["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug"];
+const prod5=[["Assorted Sandwich Platter", 8873.2], ["Smoked Beef Sandwich", 6989.55], ["Chicken Club Sandwich", 6191.25], ["Tuna Melt Sandwich", 5778.5], ["Grilled Chicken Wrap", 4799.25]];
+const dayItems=[["Monday", 5857.45], ["Tuesday", 5386.39], ["Wednesday", 5783.21], ["Thursday", 6529.68], ["Friday", 10699.2], ["Saturday", 8952.8], ["Sunday", 7212.9]];
+const catItems=[["Sandwich", 23729.3], ["Wrap", 8909.2], ["Platter", 8873.2], ["Beverage", 4995.83], ["Side", 3914.1]];
+
+function fmt(v){return Number(v).toLocaleString(undefined,{maximumFractionDigits:0})}
+function money(v){return 'BND '+fmt(v)}
+
+const maxM=Math.max(...monthVals),minM=Math.min(...monthVals);
+const pts=monthVals.map((v,i)=>{const x=45+i*(635/(monthVals.length-1));const y=225-((v-minM)/(maxM-minM||1))*165;return [x,y]});
+document.getElementById('trend').setAttribute('points',pts.map(p=>p.join(',')).join(' '));
+document.getElementById('area').setAttribute('d','M '+pts.map(p=>p.join(' ')).join(' L ')+' L '+pts[pts.length-1][0]+' 240 L 45 240 Z');
+document.getElementById('monthLabels').innerHTML=monthLabels.map(m=>`<span>${m}</span>`).join('');
+
+const maxProd=Math.max(...prod5.map(x=>x[1]));
+document.getElementById('productBars').innerHTML=prod5.map(([p,v])=>`<div class="product-row"><span>${p}</span><div class="pbar"><i style="width:${v/maxProd*100}%"></i></div><b>${money(v)}</b></div>`).join('');
+
+const maxDay=Math.max(...dayItems.map(x=>x[1]));
+document.getElementById('dayBars').innerHTML=dayItems.map(([d,v])=>`<div class="daycol"><div class="daybar" style="height:${v/maxDay*135}px"></div><span>${d.slice(0,3)}</span></div>`).join('');
+
+const colors=['#5b8def','#59c29d','#9c83e4','#f6b37d','#ee94b4'];
+const maxCat=Math.max(...catItems.map(x=>x[1]));
+document.getElementById('categoryBars').innerHTML=catItems.map(([c,v],i)=>`<div style="margin:11px 0"><div style="display:flex;justify-content:space-between;font-size:.74rem"><span>${c}</span><b>${money(v)}</b></div><div class="bar"><i style="width:${v/maxCat*100}%;background:${colors[i%colors.length]}"></i></div></div>`).join('');
+
+function productChart(){
+  return `<div class="msg-chart"><div style="font-size:.68rem;font-weight:800;margin-bottom:7px">Top products by revenue</div><div class="mini-bars">${prod5.map(([name,v])=>`<div class="mini-row"><span>${name}</span><div class="mini-track"><i style="width:${v/maxProd*100}%"></i></div><b>${fmt(v)}</b></div>`).join('')}</div></div>`;
 }
 
-navButtons.forEach(btn => {
-  btn.addEventListener('click', () => showPage(btn.dataset.page));
-});
+document.getElementById('starterBot').innerHTML=`<b>${facts.topProduct}</b> generated the highest revenue at approximately <b>${money(facts.topProductRevenue)}</b>.${productChart()}<div class="followups"><button class="followup dynamic-prompt">Compare the top two products</button><button class="followup dynamic-prompt">Which product is underperforming?</button></div><span class="msg-time">09:42</span>`;
 
-function showToast(message){
-  toast.textContent = message;
-  toast.classList.add('show');
-  clearTimeout(window.toastTimer);
-  window.toastTimer = setTimeout(()=>toast.classList.remove('show'), 2200);
+function responseFor(q){
+  const x=q.toLowerCase(); let text='',follow=[],chart='';
+  if(x.includes('best product')||x.includes('top product')||x.includes('performed best')){
+    text=`<b>${facts.topProduct}</b> generated the highest revenue at approximately <b>${money(facts.topProductRevenue)}</b>.`;chart=productChart();follow=['Compare the top two products','Which product is underperforming?'];
+  }else if(x.includes('top two')||x.includes('compare the top')){
+    text=`<b>${facts.topProduct}</b> leads <b>${facts.secondProduct}</b> by about <b>${money(facts.topProductRevenue-facts.secondProductRevenue)}</b> in revenue.`;chart=productChart();follow=['What should I investigate about the top product?','Show me the weakest product'];
+  }else if(x.includes('underperform')||x.includes('weakest')||x.includes('lowest product')){
+    text=`<b>${facts.lowestProduct}</b> generated the lowest revenue at approximately <b>${money(facts.lowestProductRevenue)}</b>. This does not automatically mean it should be removed; you may want to investigate demand, pricing, availability or promotion.`;follow=['Compare it with the top product','What should I investigate next?'];
+  }else if(x.includes('best month')||x.includes('strongest month')){
+    text=`The strongest month was <b>${facts.bestMonth}</b>, with approximately <b>${money(facts.bestMonthRevenue)}</b> in revenue.`;follow=['Why might sales have increased?','What was the latest growth rate?'];
+  }else if(x.includes('growth')){
+    text=`The latest month changed by <b>${facts.growth>0?'+':''}${facts.growth}%</b> compared with the previous month. A useful next step would be to compare product mix, order volume and customer channel.`;follow=['Which products may have contributed?','Compare dine-in and takeaway'];
+  }else if(x.includes('dine')||x.includes('takeaway')||x.includes('channel')){
+    text=`Takeaway represents about <b>${facts.takeawayPct}%</b> of orders, compared with <b>${facts.dineinPct}%</b> for dine-in. You may want to investigate whether the channels differ in average order value or product mix.`;follow=['Which channel should I investigate?','What should I investigate next?'];
+  }else if(x.includes('busiest')||x.includes('period')||x.includes('time')){
+    text=`<b>${facts.topDaypart}</b> is the strongest daypart, while <b>${facts.bestDay}</b> is the strongest day overall.`;follow=['Which products sell best then?','What should I investigate about staffing?'];
+  }else if(x.includes('average')||x.includes('order value')){
+    text=`The average order value is approximately <b>BND ${facts.aov.toFixed(2)}</b> across <b>${facts.totalOrders.toLocaleString()}</b> demo orders.`;follow=['Compare dine-in and takeaway','Which products may raise order value?'];
+  }else if(x.includes('investigate next')||x.includes('recommend')||x.includes('suggest')){
+    text=`I would investigate three areas first: <b>(1)</b> what drives ${facts.bestDay} performance, <b>(2)</b> why ${facts.topProduct} is much stronger than lower-performing products, and <b>(3)</b> whether takeaway orders have a distinct product mix or order value. These are investigation suggestions, not autonomous business decisions.`;follow=['Investigate Friday performance','Compare top and lowest products','Compare order channels'];
+  }else if(x.includes('friday')||x.includes('best day')){
+    text=`<b>${facts.bestDay}</b> generated the highest total revenue. To understand why, I would compare product mix, order count, average order value and daypart activity against other days.`;follow=['Which products sell best then?','When are my busiest periods?'];
+  }else{
+    text=`I can help explore product performance, monthly trends, order channels, busy periods and areas worth investigating. In a full implementation, SalesSense would interpret your question dynamically against uploaded business data.`;follow=['What was my best month?','Which product performed best?','What should I investigate next?'];
+  }
+  return {text,follow,chart};
 }
 
-document.getElementById('file-input')?.addEventListener('change', e => {
-  const file = e.target.files[0];
-  document.getElementById('file-name').textContent = file ? file.name : '';
-  if(file) showToast('Demo upload selected: ' + file.name);
-});
+function addUser(container,q){const e=document.createElement('div');e.className='msg user';e.innerHTML=q+'<span class="msg-time">now</span>';container.appendChild(e);container.scrollTop=container.scrollHeight}
+function addBot(container,r){const e=document.createElement('div');e.className='msg bot';e.innerHTML=r.text+(r.chart||'')+(r.follow.length?`<div class="followups">${r.follow.map(f=>`<button class="followup dynamic-prompt">${f}</button>`).join('')}</div>`:'')+'<span class="msg-time">now</span>';container.appendChild(e);container.scrollTop=container.scrollHeight}
+function send(input,container,typing){const q=input.value.trim();if(!q)return;addUser(container,q);input.value='';typing.classList.add('show');setTimeout(()=>{typing.classList.remove('show');addBot(container,responseFor(q));bindDynamic()},380)}
 
-document.getElementById('fake-upload')?.addEventListener('click', () => {
-  showToast('Upload interaction shown for prototype only.');
-});
+function goFull(){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById('ask').classList.add('active');document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('active',x.dataset.page==='ask'));document.getElementById('popchat').classList.remove('open');window.scrollTo({top:0,behavior:'smooth'})}
 
-const quickInput = document.getElementById('quick-question');
-document.querySelectorAll('.suggestion').forEach(btn => {
-  btn.addEventListener('click', () => {
-    quickInput.value = btn.dataset.q;
-    showPage('ask-ai');
-    const aiInput = document.getElementById('ai-input');
-    setTimeout(() => {
-      aiInput.value = btn.dataset.q;
-      aiInput.focus();
-    }, 100);
-  });
-});
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(b.dataset.page).classList.add('active');document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));b.classList.add('active');window.scrollTo({top:0,behavior:'smooth'})});
 
-document.getElementById('quick-send')?.addEventListener('click', () => {
-  if(!quickInput.value.trim()) return;
-  showPage('ask-ai');
-  const aiInput = document.getElementById('ai-input');
-  setTimeout(() => {
-    aiInput.value = quickInput.value;
-    document.getElementById('ai-send').click();
-  }, 100);
-});
+document.getElementById('fullSend').onclick=()=>send(document.getElementById('fullInput'),document.getElementById('fullMessages'),document.getElementById('fullTyping'));
+document.getElementById('fullInput').onkeydown=e=>{if(e.key==='Enter')document.getElementById('fullSend').click()};
+document.querySelectorAll('.ask-prompt').forEach(b=>b.onclick=()=>{document.getElementById('fullInput').value=b.textContent;document.getElementById('fullSend').click()});
 
-function addChat(text){
-  const log = document.getElementById('chat-log');
-  const user = document.createElement('div');
-  user.className = 'chat user';
-  user.textContent = text;
-  log.appendChild(user);
+const pop=document.getElementById('popchat');
+document.getElementById('fab').onclick=()=>pop.classList.toggle('open');
+document.getElementById('closeChat').onclick=()=>pop.classList.remove('open');
+document.getElementById('openFull').onclick=goFull;
+document.getElementById('popSend').onclick=()=>send(document.getElementById('popInput'),document.getElementById('popMessages'),document.getElementById('popTyping'));
+document.getElementById('popInput').onkeydown=e=>{if(e.key==='Enter')document.getElementById('popSend').click()};
+document.querySelectorAll('.popup-prompt').forEach(b=>b.onclick=()=>{document.getElementById('popInput').value=b.textContent;document.getElementById('popSend').click()});
 
-  const ai = document.createElement('div');
-  ai.className = 'chat ai';
-  ai.innerHTML = '<strong>SalesSense:</strong><br>This is a simulated prototype response. In the full research system, SalesSense would respond using the uploaded sales data and calculated analytics.';
-  log.appendChild(ai);
-  log.scrollTop = log.scrollHeight;
-}
-
-document.getElementById('ai-send')?.addEventListener('click', () => {
-  const input = document.getElementById('ai-input');
-  const text = input.value.trim();
-  if(!text) return;
-  addChat(text);
-  input.value = '';
-});
-
-document.getElementById('ai-input')?.addEventListener('keydown', e => {
-  if(e.key === 'Enter') document.getElementById('ai-send').click();
-});
-
-document.querySelectorAll('.prompt-chip').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.getElementById('ai-input').value = btn.textContent;
-    document.getElementById('ai-input').focus();
-  });
-});
-
-document.querySelectorAll('.secondary-btn').forEach(btn => {
-  btn.addEventListener('click', () => showToast('Preview shown as a concept feature.'));
-});
-
-document.querySelectorAll('.switch').forEach(sw => {
-  sw.addEventListener('click', () => sw.classList.toggle('on'));
-});
-
-document.querySelector('.primary-btn')?.addEventListener('click', () => showToast('Settings saved in prototype.'));
-
+function bindDynamic(){document.querySelectorAll('.dynamic-prompt').forEach(b=>{b.onclick=()=>{if(document.getElementById('ask').classList.contains('active')){document.getElementById('fullInput').value=b.textContent;document.getElementById('fullSend').click()}else{document.getElementById('popInput').value=b.textContent;document.getElementById('popSend').click()}}})}
+bindDynamic();
 </script>
 </body>
 </html>
